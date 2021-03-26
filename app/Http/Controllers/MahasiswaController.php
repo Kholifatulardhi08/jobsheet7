@@ -123,7 +123,6 @@ class MahasiswaController extends Controller
         //fungsi eloquent untuk menghapus data
             //Mahasiswa::find($Nim)->delete();
             DB::table('mahasiswa')->where('nim',$Nim)->delete();
-            return redirect()->route('mahasiswa.index')
-            -> with('success', 'Mahasiswa Berhasil Dihapus');
+            return redirect()->route('mahasiswa.index')-> with('success', 'Mahasiswa Berhasil Dihapus');
     }
 }
