@@ -16,3 +16,4 @@ use App\User;
 |
 */
 Route::resource('/mahasiswa', MahasiswaController::class);
+Route::get('/pegawai/cari','MahasiswaController@cari');

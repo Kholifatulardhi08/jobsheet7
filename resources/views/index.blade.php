@@ -17,12 +17,27 @@
  </div>
       @endif
 
+      <p>Cari Data Mahasiswa :</p>
+	 <form action="{{ url()->current() }}">
+    <div class="col-md-11">
+        <input type="text" name="keyword" class="form-control" placeholder="Search users...">
+    </div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+     </form>
+
  <table class="table table-bordered">
       <tr>
       <th>Nim</th>
       <th>Nama</th>
       <th>Kelas</th>
       <th>Jurusan</th>
+      <th>Email</th>
+      <th>Alamat</th>
+      <th>Tanggal_lahir</th>
       <th width="280px">Action</th>
       </tr>
       @foreach ($mahasiswa as $mhs)
@@ -31,6 +46,10 @@
       <td>{{ $mhs ->nama }}</td>
       <td>{{ $mhs ->kelas }}</td>
       <td>{{ $mhs ->jurusan }}</td>
+      <td>{{ $mhs ->email }}</td>
+      <td>{{ $mhs ->alamat }}</td>
+      <td>{{ $mhs ->tanggal_lahir }}</td>
+
       <td>
       <form action="{{ route('mahasiswa.destroy',['mahasiswa'=>$mhs->nim]) }}" method="POST">
       <a class="btn btn-info" href="{{ route('mahasiswa.show',$mhs->nim) }}">Show</a>
@@ -43,4 +62,5 @@
       </tr>
       @endforeach
       </table>
+      {{ $mahasiswa->links() }}
 @endsection

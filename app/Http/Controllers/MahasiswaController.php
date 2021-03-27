@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MahasiswaController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Models\Mahasiswa;
 
 class MahasiswaController extends Controller
@@ -19,9 +20,11 @@ class MahasiswaController extends Controller
     {
         //fungsi eloquent menampilkan data menggunakan pagination
             $mahasiswa = $mahasiswa = DB::table('mahasiswa')->get(); // Mengambil semua isi tabel
-            $posts = Mahasiswa::orderBy('Nim', 'desc')->paginate(6);
-            return view('index', compact('mahasiswa'));
-            with('i', (request()->input('page', 1) - 1) * 5);
+            $posts = Mahasiswa::orderBy('Nim', 'desc');
+            //menambahkan paginate pada index
+            return view('index', [
+                'mahasiswa' => DB::table('mahasiswa')->paginate(3)
+            ]);
     }
 
     /**
@@ -32,6 +35,15 @@ class MahasiswaController extends Controller
     public function create()
     {
         return view('create');
+    }
+
+    public function cari(\Illuminate\Http\Request $request)
+    {
+        $mahasiswa = mahasiswa::when($request->keyword, function ($query) use ($request) {
+            $query->where('nim', 'like', "%{$request->keyword}%")
+                ->orWhere('nama', 'like', "%{$request->keyword}%");
+        })->get();
+        return view('mahasiswa.detail', compact('mahasiswa'));
     }
 
     /**
@@ -67,7 +79,7 @@ class MahasiswaController extends Controller
     {
         //menampilkan detail data dengan menemukan/berdasarkan Nim Mahasiswa
             $Mahasiswa = Mahasiswa::find($Nim);
-            return view('detail', compact('mahasiswa'));
+            return view('detail', compact('Mahasiswa'));
     }
 
     /**
@@ -82,6 +94,7 @@ class MahasiswaController extends Controller
             $Mahasiswa = DB::table('mahasiswa')->where('nim', $Nim)->first();;
             return view('edit', compact('Mahasiswa'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -99,7 +112,7 @@ class MahasiswaController extends Controller
         //'Kelas' => 'required',
         //'Jurusan' => 'required',
     //]);
-    DB::table('mahasiswa')->where('nim',$request->nim)->update([
+DB::table('mahasiswa')->where('nim',$request->nim)->update([
         //'nim' => $request->nim,
         'nama' => $request->nama,
 		'kelas' => $request->kelas,
@@ -111,6 +124,7 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')
         ->with('success', 'Mahasiswa Berhasil Diupdate');
     }
+
 
     /**
      * Remove the specified resource from storage.
